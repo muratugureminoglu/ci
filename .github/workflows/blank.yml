@@ -1,21 +1,9 @@
 name: Development Test and Build and Push Docker Image
 
 on:
-  pull_request:
-    paths-ignore:
-      - '**/README.md'
-      - '**/.github/**'
-      - '**/package.sh'
-    types:
-      - synchronize
-  check_suite:
-    types:
-      - requested
-  workflow_dispatch:
-
-permissions:
-  contents: write
-  pull-requests: write 
+  push:
+    branches:
+      - '*'
 
 jobs:
   check_version_changes:
