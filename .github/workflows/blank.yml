@@ -21,14 +21,4 @@ jobs:
         run: |
           # Build commands here
 
-  push:
-    needs: build
-    runs-on: ubuntu-latest
-    if: ${{ steps.version-check.outputs.changed != 'true' && !contains(github.event.head_commit.modified, 'VERSION') }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
 
-      - name: Push
-        run: |
-          # Push commands here
