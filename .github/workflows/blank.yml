@@ -15,13 +15,20 @@ jobs:
       - name: Check for changes in VERSION file
         id: version-check
         run: |
-          echo "VERSION" >> .changed_files
-          git diff --name-only ${{ github.base_ref }}...${{ github.sha }} | grep -qv 'VERSION' && echo "OTHER" >> .changed_files || true
-          cat .changed_files
+          if git diff --quiet ${{ github.base_ref }}...${{ github.sha }} -- VERSION; then
+            echo "::set-output name=version-changed::false"
+          else
+            echo "::set-output name=version-changed::true"
+          fi
+
+      - name: Build
+        if: steps.version-check.outputs.version-changed == 'true'
+        run: |
+          # Build commands here
 
   push:
     needs: build
-    if: ${{ needs.build.outputs.version-check.run == 'VERSION' }}
+    if: steps.version-check.outputs.version-changed == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
