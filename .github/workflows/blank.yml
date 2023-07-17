@@ -6,6 +6,8 @@ on:
       - '**/README.md'
       - '**/.github/**'
       - '**/package.sh'
+    types:
+      - synchronize
   check_suite:
     types:
       - requested
@@ -26,11 +28,13 @@ jobs:
       - name: Check for VERSION changes
         id: check_version
         run: |
-          git diff --name-only HEAD^ HEAD | grep VERSION || echo "VERSION not changed"
+          git fetch origin ${{ github.base_ref }}
+          git diff --name-only origin/${{ github.base_ref }} HEAD | grep VERSION || echo "VERSION not changed"
 
   build-and-push:
-    if: ${{ steps.check_version.outputs.check_version != 'VERSION not changed' }}
+    needs: check_version_changes
     runs-on: ubuntu-latest
+    if: ${{ steps.check_version.outputs.check_version != 'VERSION not changed' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -39,7 +43,7 @@ jobs:
         run: echo "test"
 
   build:
-    needs: build-and-push
+    needs: check_version_changes
     runs-on: ubuntu-latest
     if: ${{ steps.check_version.outputs.check_version == 'VERSION not changed' }}
     steps:
