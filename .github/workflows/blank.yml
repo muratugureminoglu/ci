@@ -11,7 +11,6 @@ on:
   check_suite:
     types:
       - requested
-      - opened
   workflow_dispatch:
 
 permissions:
@@ -21,6 +20,8 @@ permissions:
 jobs:
   check_version_changes:
     runs-on: ubuntu-latest
+    outputs:
+      version_changed: ${{ steps.check_version.outputs.check_version != 'VERSION not changed' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,13 +29,11 @@ jobs:
       - name: Check for VERSION changes
         id: check_version
         run: |
-          git fetch origin ${{ github.base_ref }}
-          git diff --name-only origin/${{ github.base_ref }} HEAD | grep VERSION || echo "VERSION not changed"
+          git diff --name-only HEAD^ HEAD | grep VERSION || echo "VERSION not changed"
 
   build-and-push:
-    needs: check_version_changes
+    if: ${{ needs.check_version_changes.outputs.version_changed }}
     runs-on: ubuntu-latest
-    if: ${{ steps.check_version.outputs.check_version != 'VERSION not changed' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -43,9 +42,9 @@ jobs:
         run: echo "test"
 
   build:
-    needs: check_version_changes
+    needs: build-and-push
     runs-on: ubuntu-latest
-    if: ${{ steps.check_version.outputs.check_version == 'VERSION not changed' }}
+    if: ${{ !needs.check_version_changes.outputs.version_changed }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
