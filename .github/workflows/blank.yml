@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   build-and-push:
-    if: ${{ regex(github.event.pull_request.changed_files, '/VERSION/') }}
+    if: ${{ uses('actions-ecosystem/action-regex-match@v1') && regex(github.event.pull_request.changed_files, '/VERSION/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
