@@ -15,7 +15,7 @@ jobs:
       - name: Check for changes in VERSION file
         id: version-check
         run: |
-          if git diff --name-only ${{ github.base_ref }} ${{ github.sha }} | grep -E '^VERSION$'; then
+          if [[ $(git diff --name-only ${{ github.base_ref }} ${{ github.sha }}) == *VERSION* ]]; then
             echo "::set-output name=version-changed::true"
             echo "true"
           else
