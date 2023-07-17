@@ -30,7 +30,7 @@ jobs:
         run: echo "test"
 
   build:
-    needs: build-and-push
+    needs: check_version_changes
     runs-on: ubuntu-latest
     if: ${{ !needs.check_version_changes.outputs.version_changed }}
     steps:
