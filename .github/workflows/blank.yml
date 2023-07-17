@@ -6,14 +6,8 @@ on:
       - '**/README.md'
       - '**/.github/**'
       - '**/package.sh'
-  check_suite:
     types:
-      - requested
-  workflow_dispatch:
- # push:
- #   branches:
- #     - '*'
-
+      - synchronize
 permissions:
   contents: write
   pull-requests: write 
