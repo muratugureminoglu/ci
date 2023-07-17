@@ -10,9 +10,9 @@ on:
     types:
       - requested
   workflow_dispatch:
-  push:
-    branches:
-      - '*'
+ # push:
+ #   branches:
+ #     - '*'
 
 permissions:
   contents: write
