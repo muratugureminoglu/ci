@@ -6,8 +6,6 @@ on:
       - '**/README.md'
       - '**/.github/**'
       - '**/package.sh'
-    types:
-      - synchronize
   check_suite:
     types:
       - requested
