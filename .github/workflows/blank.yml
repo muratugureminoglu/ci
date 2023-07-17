@@ -1,40 +1,30 @@
-name: Development Test and Build and Push Docker Image
+name: Build and Upload
 
 on:
   push:
-    branches:
-      - '*'
+    paths:
+      - '**'
 
 jobs:
-  check_version_changes:
+  build-and-upload:
     runs-on: ubuntu-latest
-    outputs:
-      version_changed: ${{ steps.check_version.outputs.check_version != 'VERSION not changed' }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
 
-      - name: Check for VERSION changes
-        id: check_version
+    steps:
+      - name: Check for changes in VERSION file
+        id: version-check
+        run: echo "::set-output name=changed::$(if git diff --name-only ${{ github.base_ref }}...${{ github.sha }} | grep -q 'VERSION'; then echo 'true'; else echo 'false'; fi)"
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build
+        if: steps.version-check.outputs.changed == 'true' || contains(github.event.head_commit.modified, 'VERSION') == true
         run: |
-          git diff --name-only HEAD^ HEAD | grep VERSION || echo "VERSION not changed"
+          # Build commands here
+          echo "BUILD is OK"
 
-  build-and-push:
-    if: ${{ needs.check_version_changes.outputs.version_changed }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Download latest.zip
-        run: echo "test"
-
-  build:
-    needs: check_version_changes
-    runs-on: ubuntu-latest
-    if: ${{ !needs.check_version_changes.outputs.version_changed }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      # Add steps for the build process
+      - name: Upload
+        if: steps.version-check.outputs.changed == 'true'
+        run: |
+          # Upload commands here
+          echo "UPLOAD is OK"
