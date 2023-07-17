@@ -21,7 +21,3 @@ jobs:
             echo "::set-output name=version-changed::true"
           fi
 
-      - name: Build
-        if: steps.version-check.outputs.version-changed == 'true'
-        run: |
-          # Build commands here
