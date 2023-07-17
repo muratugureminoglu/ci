@@ -17,7 +17,9 @@ jobs:
         run: |
           if git diff --quiet ${{ github.base_ref }}...${{ github.sha }} -- VERSION; then
             echo "::set-output name=version-changed::false"
+            echo "FALSE"
           else
             echo "::set-output name=version-changed::true"
+            echo "TRUE"
           fi
 
