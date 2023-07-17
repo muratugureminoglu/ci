@@ -17,8 +17,19 @@ permissions:
   pull-requests: write 
 
 jobs:
+  check_version_changes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check for VERSION changes
+        id: check_version
+        run: |
+          git diff --name-only HEAD^ HEAD | grep VERSION || echo "VERSION not changed"
+
   build-and-push:
-    if: contains(github.event.pull_request.title, 'VERSION')
+    if: steps.check_version.outputs.check_version != 'VERSION not changed'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -26,9 +37,15 @@ jobs:
 
       - name: Download latest.zip
         run: echo "test"
+
   build:
+    needs: build-and-push
     runs-on: ubuntu-latest
+    if: steps.check_version.outputs.check_version == 'VERSION not changed'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      
+      # Add steps for the build process
+
 
