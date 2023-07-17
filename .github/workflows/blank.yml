@@ -1,17 +1,14 @@
 name: Build and Push
-
 on:
   push:
     branches:
       - '*'
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Check for changes in VERSION file
         id: version-check
         run: |
@@ -22,4 +19,3 @@ jobs:
             echo "::set-output name=version-changed::false"
             echo "false"
           fi
-
