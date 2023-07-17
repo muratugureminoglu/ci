@@ -16,9 +16,3 @@ jobs:
         id: version-check
         run: echo "::set-output name=changed::$(if git diff --name-only ${{ github.base_ref }}...${{ github.sha }} | grep -q 'VERSION'; then echo 'true'; else echo 'false'; fi)"
 
-      - name: Build
-        if: ${{ steps.version-check.outputs.changed == 'true' || contains(github.event.head_commit.modified, 'VERSION') }}
-        run: |
-          # Build commands here
-
-
