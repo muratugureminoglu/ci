@@ -25,15 +25,3 @@ jobs:
         if: steps.version-check.outputs.version-changed == 'true'
         run: |
           # Build commands here
-
-  push:
-    needs: build
-    if: steps.version-check.outputs.version-changed == 'false'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Push
-        run: |
-          # Push commands here
