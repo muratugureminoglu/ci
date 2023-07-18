@@ -27,4 +27,4 @@ jobs:
 
       - name: Stream Video using FFmpeg
         run: |
-          ffmpeg -re -i sample_MP4_480.mp4 -c copy -f flv rtmp://127.0.0.1/WebRTCAppEE/stream1
+          ffmpeg -re -i sample_MP4_480.mp4 -c copy -f flv rtmp://ovh36.antmedia.io/WebRTCAppEE/stream1
