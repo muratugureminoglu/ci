@@ -28,4 +28,4 @@ jobs:
       - name: Stream Video using FFmpeg
         run: |
           sleep 5
-          nohup ffmpeg -re -i sample_MP4_480.mp4 -c:v libx264 -c:a aac -f flv rtmp://ovh36.antmedia.io/WebRTCAppEE/stream1 > ffmpeg.log 2>&1 &
+          nohup ffmpeg -re -i sample_MP4_480.mp4 -c:v libx264 -c:a aac -f flv rtmp://ovh36.antmedia.io/WebRTCAppEE/stream1 
