@@ -1,0 +1,30 @@
+name: Stream Video
+
+on:
+  push:
+    branches:
+      - main  # Adjust this branch name based on your repository's default branch
+
+jobs:
+  stream_video:
+    runs-on: ubuntu-latest  # Use the latest version of Ubuntu as the runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # This action checks out your repository's code on the runner
+
+      - name: Download Sample MP4 Video
+        run: |
+          wget https://raw.githubusercontent.com/ant-media/Ant-Media-Server/master/src/test/resources/sample_MP4_480.mp4
+        # Optionally, you can specify a different destination path:
+        # run: |
+        #   wget https://raw.githubusercontent.com/ant-media/Ant-Media-Server/master/src/test/resources/sample_MP4_480.mp4 -O your/desired/path/sample_MP4_480.mp4
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Stream Video using FFmpeg
+        run: |
+          ffmpeg -re -i sample_MP4_480.mp4 -c copy -f flv rtmp://127.0.0.1/WebRTCAppEE/stream1
