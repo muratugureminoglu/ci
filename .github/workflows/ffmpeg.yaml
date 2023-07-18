@@ -20,13 +20,7 @@ jobs:
         # run: |
         #   wget https://raw.githubusercontent.com/ant-media/Ant-Media-Server/master/src/test/resources/sample_MP4_480.mp4 -O your/desired/path/sample_MP4_480.mp4
 
-      - name: Install FFmpeg
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+      - uses: FedericoCarboni/setup-ffmpeg@v2
+        id: setup-ffmpeg
+      - run: ffmpeg -re -i sample_MP4_480.mp4 -c copy -f flv rtmp://ovh36.antmedia.io/WebRTCAppEE/stream1 &
 
-      - name: Stream Video using FFmpeg
-        run: |
-          sleep 5
-          ffmpeg -re -i sample_MP4_480.mp4 -c:v libx264 -c:a aac -f flv rtmp://ovh36.antmedia.io/WebRTCAppEE/stream1 &> ffmpeg.log &
-          cat ffmpeg.log
