@@ -22,5 +22,6 @@ jobs:
 
       - uses: FedericoCarboni/setup-ffmpeg@v2
         id: setup-ffmpeg
-      - run: ffmpeg -re -i sample_MP4_480.mp4 -c copy -f flv rtmp://ovh36.antmedia.io/WebRTCAppEE/stream1 
+#      - run: ffmpeg -re -i sample_MP4_480.mp4 -c copy -f flv rtmp://ovh36.antmedia.io/WebRTCAppEE/stream1 
+      - run: ffmpeg -re -i ./sample_MP4_480.mp4 -codec copy -f flv rtmp://test.antmedia.io/LiveApp/murat-test &
 
