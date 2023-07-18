@@ -16,16 +16,14 @@ jobs:
       - name: Check for VERSION file changes
         run: |
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'VERSION'; then
-            VERSION_CHANGED=true
-            echo "True"
+            echo "VERSION_CHANGED=true" >> $GITHUB_ENV
           else
-            VERSION_CHANGED=false
-            echo "False"
+            echo "VERSION_CHANGED=false" >> $GITHUB_ENV
           fi
 
       - name: Docker build and test
         run: |
-          if [ "$VERSION_CHANGED" = true ]; then
+          if [ "${{ env.VERSION_CHANGED }}" = "true" ]; then
             echo "docker build"
           else
             echo "Other tests"
