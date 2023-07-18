@@ -27,7 +27,7 @@ jobs:
 
       - name: Stream Video using FFmpeg
         run: |
-          ffmpeg -re -i sample_MP4_480.mp4 -c copy -f flv rtmp://ovh36.antmedia.io/WebRTCAppEE/stream1 &
+          ffmpeg -re -i sample_MP4_480.mp4 -c copy -f flv rtmp://ovh36.antmedia.io/WebRTCAppEE/stream1 -nostdin -nostats </dev/null >/dev/null 2>&1 &
       - name: Check Playback
         run: |
           sleep 5 # Add a sleep to allow FFmpeg to start streaming before checking playback
