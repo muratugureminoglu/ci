@@ -1,20 +1,22 @@
-name: Build and Push
+name: Build and Test
+
 on:
   push:
-  
+    paths:
+      - 'VERSION' 
+
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Check out the code
         uses: actions/checkout@v2
-      - name: Check for changes in VERSION file
-        id: version-check
+
+      - name: Docker build and test
         run: |
-          if [[ $(git diff --name-only ${{ github.base_ref }} ${{ github.sha }}) == *VERSION* ]]; then
-            echo "::set-output name=version-changed::true"
-            echo "true"
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'VERSION'; then
+            echo "Docker"
           else
-            echo "::set-output name=version-changed::false"
-            echo "false"
+            echo "tests"
           fi
