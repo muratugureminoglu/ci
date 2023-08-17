@@ -26,5 +26,5 @@ jobs:
           if [ "${{ env.VERSION_CHANGED }}" = "true" ]; then
             echo "docker build"
           else
-            echo "Other tests"
+            echo "Other tests" 
           fi
