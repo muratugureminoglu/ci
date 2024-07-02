@@ -21,7 +21,7 @@ jobs:
         
     - name: Login to server
       run: |
-        curl -X POST -H "Accept: Application/json" -H "Content-Type: application/json" ${{ secrets.PRODUCTION_SERVER_URL }}/rest/v2/users/authenticate -d '{"email":"${{ secrets.USER_NAME }}","password":"${{ secrets.PASSWORD }}"}' -c cookie.txt 
+        curl -X POST -H "Accept: Application/json" -H "Content-Type: application/json" https://meet.antmedia.io/rest/v2/users/authenticate -d '{"email":"${{ secrets.USER_NAME }}","password":"${{ secrets.PASSWORD }}"}' -c cookie.txt 
         if [ $? -ne 0 ]; then
           echo "Login failed"
           exit 1
