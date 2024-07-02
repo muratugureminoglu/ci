@@ -1,0 +1,63 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on: 
+ [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get versions data from repo
+      run: wget -O maven-metadata.xml https://oss.sonatype.org/service/local/repositories/snapshots/content/io/antmedia/ant-media-server/maven-metadata.xml       
+    - name: Install jq
+      run: sudo apt-get install jq -y
+    - name: Download war File
+      run: |
+        export LATEST_SNAPSHOT=$(cat maven-metadata.xml | grep "<version>" | tail -n 1 |  xargs | cut -c 10-23)
+        echo $LATEST_SNAPSHOT
+        wget -O ConferenceCall.war "https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=io.antmedia.webrtc&a=ConferenceCall&v=${LATEST_SNAPSHOT}&e=war"
+        ls -al
+        
+    - name: Login to server
+      run: |
+        curl -X POST -H "Accept: Application/json" -H "Content-Type: application/json" ${{ secrets.PRODUCTION_SERVER_URL }}/rest/v2/users/authenticate -d '{"email":"${{ secrets.USER_NAME }}","password":"${{ secrets.PASSWORD }}"}' -c cookie.txt 
+        if [ $? -ne 0 ]; then
+          echo "Login failed"
+          exit 1
+        fi
+    - name: Delete Old App
+      run: |
+        curl -i -X DELETE -H "Accept: Application/json" -H "Content-Type: application/json" "${{ secrets.PRODUCTION_SERVER_URL }}/rest/v2/applications/Conference" -b cookie.txt
+        sleep 10
+        
+    - name: Create New App
+      run: |
+        export WAR_FILE_NAME="ConferenceCall.war"
+        curl -X PUT -H "Accept: Application/json" -H "Content-Type: multipart/form-data" -F "file=@./$WAR_FILE_NAME" "${{ secrets.PRODUCTION_SERVER_URL }}/rest/v2/applications/Conference" -b cookie.txt
+        if [ $? -ne 0 ]; then
+          echo "App creation is failed"
+          exit 1
+        fi
+        sleep 10
+        
+    - name: Change Settings
+      run: |
+        curl "${{ secrets.PRODUCTION_SERVER_URL }}/rest/v2/applications/settings/Conference" -b cookie.txt -o settings.json
+        jq '.stunServerURI = "turn:${{ secrets.PRODUCTION_TURN_URL }}" | .turnServerUsername = "${{ secrets.PRODUCTION_TURN_USERNAME }}" | .turnServerCredential = "${{ secrets.PRODUCTION_TURN_PASSWORD }}"' settings.json > updated_settings.json
+        curl -X POST -H "Accept: Application/json" -H "Content-Type: application/json" -d @updated_settings.json -b cookie.txt "${{ secrets.PRODUCTION_SERVER_URL }}/rest/v2/applications/settings/Conference"
+          if [ $? -ne 0 ]; then
+          echo "Importing config file is failed"
+          exit 1
+        fi
