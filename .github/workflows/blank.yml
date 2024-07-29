@@ -30,8 +30,7 @@ jobs:
         run: |
           echo "${{ secrets.KUBE_CONFIG_DATA }}" > kubeconfig
           export KUBECONFIG=./kubeconfig
-          cat ./kubeconfig
-          ls -alh 
+          echo "KUBECONFIG=${{ github.workspace }}/kubeconfig.yaml" >> $GITHUB_ENV
   
       - name: Restart deployments
         run: |
