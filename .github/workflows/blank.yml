@@ -24,6 +24,13 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - uses: azure/setup-kubectl@v3
-      - name: kubectl
-        run: kubectl --version
+      - name: Install kubectl
 
+      - name: Configure kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" > kubeconfig
+          export KUBECONFIG=./kubeconfig
+  
+      - name: Restart deployments
+        run: |
+          kubectl rollout restart -n circle ant-media-server-origin
