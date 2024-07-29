@@ -12,19 +12,19 @@ on:
  [push]
 
 jobs:
-  build:
-
+  build-and-push:
     runs-on: ubuntu-latest
-
+    env:
+      DOCKER_URL: antmedia/enterprise
     steps:
-    - uses: actions/checkout@v3
-        
-    - name: Login to server
-      run: |
-        response=$(curl -X POST -H "Accept: Application/json" -H "Content-Type: application/json" https://meet.antmedia.io/rest/v2/users/authenticate -d '{"email":"${{ secrets.USER_NAME }}","password":"${{ secrets.PASSWORD }}"}' -c cookie.txt)
-        success=$(echo $response | jq -r '.success')
-        if [ "$success" != "true" ]; then
-          echo "Login failed"
-          exit 1
-        fi
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Push Docker image
+        run: |
+          docker pull antmedia/snapshot:latest
+          docker tag antmedia/snapshot:latest antmedia/snapshot:latest-main
+          docker push antmedia/snapshot:latest-main
