@@ -34,4 +34,5 @@ jobs:
   
       - name: Restart deployments
         run: |
-          kubectl rollout restart -n circle ant-media-server-origin
+          ls -alh
+          kubectl --kubeconfig ./kubeconfig rollout restart -n circle ant-media-server-origin
