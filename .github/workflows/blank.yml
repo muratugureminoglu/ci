@@ -23,8 +23,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Push Docker image
-        run: |
-          docker pull antmedia/snapshot:latest
-          docker tag antmedia/snapshot:latest antmedia/snapshot:latest-main
-          docker push antmedia/snapshot:latest-main
+      - uses: azure/setup-kubectl@v3
+      - name: kubectl
+        run: kubectl --version
+
