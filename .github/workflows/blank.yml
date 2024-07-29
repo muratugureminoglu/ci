@@ -30,6 +30,7 @@ jobs:
         run: |
           echo "${{ secrets.KUBE_CONFIG_DATA }}" > kubeconfig
           export KUBECONFIG=./kubeconfig
+          cat ./kubeconfig
   
       - name: Restart deployments
         run: |
