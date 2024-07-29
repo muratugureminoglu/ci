@@ -29,8 +29,8 @@ jobs:
       - name: Configure kubectl
         run: |
           echo "${{ secrets.KUBE_CONFIG_DATA }}" > kubeconfig
-          export KUBECONFIG=./kubeconfig
-          echo "KUBECONFIG=${{ github.workspace }}/kubeconfig.yaml" >> $GITHUB_ENV
+          #export KUBECONFIG=./kubeconfig
+          #echo "KUBECONFIG=${{ github.workspace }}/kubeconfig.yaml" >> $GITHUB_ENV
   
       - name: Restart deployments
         run: |
