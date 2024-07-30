@@ -10,6 +10,9 @@ name: Java CI with Maven
 
 on: 
  [push]
+ 
+env:
+  REPO: "test"
 
 jobs:
   build-and-push:
@@ -26,13 +29,18 @@ jobs:
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
 
-      - name: Configure kubectl
-        run: |
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" > kubeconfig
+      - name: test
+        run: echo $REPO
+
+
+
+#      - name: Configure kubectl
+#        run: |
+#          echo "${{ secrets.KUBE_CONFIG_DATA }}" > kubeconfig
           #export KUBECONFIG=./kubeconfig
           #echo "KUBECONFIG=${{ github.workspace }}/kubeconfig.yaml" >> $GITHUB_ENV
   
-      - name: Restart deployments
-        run: |
-          export KUBECONFIG=./kubeconfig
-          kubectl rollout restart deployment ant-media-server-origin -n circle
+#      - name: Restart deployments
+#        run: |
+#          export KUBECONFIG=./kubeconfig
+#          kubectl rollout restart deployment ant-media-server-origin -n circle
