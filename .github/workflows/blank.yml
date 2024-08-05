@@ -29,6 +29,12 @@ jobs:
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
 
+      - uses: browser-actions/setup-chrome@v1
+        with:
+         chrome-version: 127
+         install-chromedriver: true
+
+
       - name: test
         run: echo $REPO
 
