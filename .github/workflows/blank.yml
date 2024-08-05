@@ -35,8 +35,8 @@ jobs:
          chrome-version: 127
          install-chromedriver: true
       - run: |
-         ${{ steps.setup-chrome.outputs.chrome-path }} --version
-         ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
+         echo "${{ steps.setup-chrome.outputs.chrome-path }}" 
+         echo "${{ steps.setup-chrome.outputs.chromedriver-path }}" 
 
       - name: test
         run: echo $REPO
