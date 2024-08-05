@@ -33,6 +33,8 @@ jobs:
         with:
          chrome-version: 127
          install-chromedriver: true
+      - run: |
+         ${{ steps.setup-chrome.outputs.chrome-path }} --version
 
 
       - name: test
