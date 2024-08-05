@@ -1,55 +1,27 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+name: Set up and Run Tests
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: Java CI with Maven
-
-on: 
- [push]
- 
-env:
-  REPO: "test"
+on: [push]
 
 jobs:
-  build-and-push:
+  setup:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_URL: antmedia/enterprise
     steps:
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - uses: browser-actions/setup-chrome@v1
+      - name: Set up Chrome
         id: setup-chrome
+        uses: browser-actions/setup-chrome@v1
         with:
-         chrome-version: 127
-         install-chromedriver: true
-      - run: |
-         echo "${{ steps.setup-chrome.outputs.chrome-path }}" 
-         echo "${{ steps.setup-chrome.outputs.chromedriver-path }}" 
+          chrome-version: 127
+          install-chromedriver: true
 
-      - name: test
-        run: echo $REPO
+      - name: Get Chrome and ChromeDriver Paths
+        id: paths
+        run: |
+          echo "CHROME_PATH=${{ steps.setup-chrome.outputs.chrome-path }}" >> $GITHUB_ENV
+          echo "CHROMEDRIVER_PATH=${{ steps.setup-chrome.outputs.chromedriver-path }}" >> $GITHUB_ENV
 
-
-
-#      - name: Configure kubectl
-#        run: |
-#          echo "${{ secrets.KUBE_CONFIG_DATA }}" > kubeconfig
-          #export KUBECONFIG=./kubeconfig
-          #echo "KUBECONFIG=${{ github.workspace }}/kubeconfig.yaml" >> $GITHUB_ENV
-  
-#      - name: Restart deployments
-#        run: |
-#          export KUBECONFIG=./kubeconfig
-#          kubectl rollout restart deployment ant-media-server-origin -n circle
+      - name: Run Script
+        run: |
+          cat multitrack-conference-server.py
