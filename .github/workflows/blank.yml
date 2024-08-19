@@ -1,6 +1,9 @@
 name: Set up and Run Tests
 
-on: [push]
+on:
+  push:
+    branches:
+      - test
 
 jobs:
   setup:
