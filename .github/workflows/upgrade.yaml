@@ -26,3 +26,4 @@ jobs:
         run: |
           BRANCH_NAME="${GITHUB_HEAD_REF}"
           echo $BRANCH_NAME
+
