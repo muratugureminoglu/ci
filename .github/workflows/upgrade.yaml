@@ -1,6 +1,10 @@
 name: upgrade.sh Validation Test
 on: [push]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.G_TOKEN }}
+  REPO: ${{ github.repository }}
+
 jobs:
   install_and_upgrade_ant_media_server:
     runs-on: ubuntu-latest
