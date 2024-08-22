@@ -7,17 +7,8 @@ env:
   REPO: ${{ github.repository }}
 
 jobs:
-  install_and_upgrade_ant_media_server:
+  example-job:
     runs-on: ubuntu-latest
-    name: Install Previous Version of Ant Media Server
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: server-id
-        id: set-server-id
-        run: |
-          REPO=$(echo "$REPO" | cut -d'/' -f2)
-          BRANCH_NAME=$(echo "$GITHUB_REF" | sed 's|refs/heads/||')
-          SERVER_ID="ci-$REPO-$BRANCH_NAME"
-          echo $SERVER_ID
-          echo "server_id=$SERVER_ID" >> $GITHUB_OUTPUT
+      - name: Get branch name
+        run: echo "Target branch is ${{ github.base_ref }}"
