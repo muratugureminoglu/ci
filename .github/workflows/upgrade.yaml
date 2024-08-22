@@ -1,5 +1,5 @@
 name: upgrade.sh Validation Test
-on: [push]
+on: [pull_request]
 
 env:
   GITHUB_TOKEN: ${{ secrets.G_TOKEN }}
@@ -16,7 +16,7 @@ jobs:
         id: set-server-id
         run: |
           REPO=$(echo "$REPO" | cut -d'/' -f2)
-          BRANCH_NAME="$GITHUB_HEAD_REF"
+          BRANCH_NAME=${{ github.base_ref }}"
           SERVER_ID="ci-$REPO-$BRANCH_NAME"
           echo $SERVER_ID
           echo "server_id=$SERVER_ID" >> $GITHUB_OUTPUT
