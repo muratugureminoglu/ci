@@ -20,3 +20,18 @@ jobs:
           SERVER_ID="ci-$REPO-$BRANCH_NAME"
           echo $SERVER_ID
           echo "server_id=$SERVER_ID" >> $GITHUB_OUTPUT
+
+      - name: Set server id-2
+        id: set-server-id-2
+        run: |
+          # REPO değişkenini doğru şekilde ayarlama
+          REPO=$(basename "$GITHUB_REPOSITORY")
+          
+          # Pull request branch adı
+          BRANCH_NAME="${GITHUB_HEAD_REF}"
+          
+          # SERVER_ID oluşturma
+          SERVER_ID="ci-$REPO-$BRANCH_NAME"
+          
+          # Sonucu GitHub output'a yazdırma
+          echo "server_id=$SERVER_ID" >> $GITHUB_OUTPUT
