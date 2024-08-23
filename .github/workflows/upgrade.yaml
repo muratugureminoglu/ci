@@ -28,20 +28,18 @@ jobs:
     env:
       DOCKER_URL: antmedia/development
     steps:
-
       - name: Set Development image name
         id: set-image-name
         run: |
           echo "image_name=${{ env.DOCKER_URL }}" >> $GITHUB_OUTPUT
-
-
+  
   clean:
-    needs: [setup-runner, docker-build-and-push]
+    needs: [docker-build-and-push]  # Bu satırı değiştirin
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Delete CI Instance
-      run: |
-        SERVER_ID="${{ needs.docker-build-and-push.outputs.image_name }}"
-        echo "server id" $SERVER_ID
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Delete CI Instance
+        run: |
+          SERVER_ID="${{ needs.docker-build-and-push.outputs.server_id }}"
+          echo "server id" $SERVER_ID
