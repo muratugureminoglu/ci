@@ -24,7 +24,7 @@ jobs:
   docker-build-and-push:
     runs-on: ubuntu-latest
     outputs:
-      server_id: ${{ steps.set-image-name.outputs.image_name }}
+      image_name: ${{ steps.set-image-name.outputs.image_name }}
     env:
       DOCKER_URL: antmedia/development
     steps:
