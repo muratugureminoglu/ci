@@ -36,7 +36,7 @@ jobs:
 
 
   clean:
-    needs: [setup-runner]
+    needs: [setup-runner, docker-build-and-push]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
