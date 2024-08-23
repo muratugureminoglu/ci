@@ -1,28 +1,45 @@
-name: upgrade.sh Validation Test
-on: [push]
+name: Ant Media Server Development Test
 
-env:
-  GITHUB_TOKEN: ${{ secrets.G_TOKEN }}
-  REPO: ${{ github.repository }}
+on:
+  pull_request:
+  check_suite:
+    types:
+      - requested
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  repository-projects: write
 
 jobs:
-  install_and_upgrade_ant_media_server:
+  setup-runner:
     runs-on: ubuntu-latest
-    name: Install Previous Version of Ant Media Server
+    outputs:
+      server_id: ${{ steps.set-server-id.outputs.server_id }}
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: server-id
-        id: set-server-id
-        run: |
-          REPO=$(echo "$REPO" | cut -d'/' -f2)
-          BRANCH_NAME=$(echo "$GITHUB_REF" | sed 's|refs/heads/||')
-          SERVER_ID="ci-$REPO-$BRANCH_NAME"
-          echo $SERVER_ID
-          echo "server_id=$SERVER_ID" >> $GITHUB_OUTPUT
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      
+  docker-build-and-push:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_URL: antmedia/development
+    steps:
 
-      - name: Set server id-2
-        id: set-server-id-2
+      - name: Set Development image name
+        id: set-image-name
         run: |
-          BRANCH_NAME="${GITHUB_HEAD_REF}"
-          echo $BRANCH_NAME
+          echo "image_name=${{ env.DOCKER_URL }}" >> $GITHUB_OUTPUT
+
+
+  clean:
+    needs: [setup-runner]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Delete CI Instance
+      run: |
+        SERVER_ID="${{ needs.docker-build-and-push.outputs.image_name }}"
+        echo "server id" $SERVER_ID
