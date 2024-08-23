@@ -12,34 +12,26 @@ permissions:
   pull-requests: write
   repository-projects: write
 
-jobs:
-  setup-runner:
-    runs-on: ubuntu-latest
-    outputs:
-      server_id: ${{ steps.set-server-id.outputs.server_id }}
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      
+jobs:      
   docker-build-and-push:
     runs-on: ubuntu-latest
+#    outputs:
+#      image_name: ${{ steps.set-image-name.outputs.image_name }}
     env:
       DOCKER_URL: antmedia/development
     steps:
-
       - name: Set Development image name
         id: set-image-name
         run: |
           echo "image_name=${{ env.DOCKER_URL }}" >> $GITHUB_OUTPUT
-
-
+  
   clean:
-    needs: [setup-runner]
+    needs: [docker-build-and-push]  # Bu satırı değiştirin
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Delete CI Instance
-      run: |
-        SERVER_ID="${{ needs.docker-build-and-push.outputs.image_name }}"
-        echo "server id" $SERVER_ID
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Delete CI Instance
+        run: |
+          SERVER_ID="${{ needs.docker-build-and-push.outputs.image_name }}"
+          echo "server id" $SERVER_ID
