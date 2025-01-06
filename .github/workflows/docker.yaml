@@ -36,7 +36,7 @@ jobs:
            docker run --name test-container-${{ github.run_id }}-${{ matrix.use_supervisor }} \
             -d my-docker-image:${{ github.run_id }}-${{ matrix.use_supervisor }}
             
-           sleep 10 # container'ın ayağa kalkması için bekle
+           sleep 10 
            
            docker logs test-container-${{ github.run_id }}-${{ matrix.use_supervisor }}
            
@@ -51,7 +51,7 @@ jobs:
            docker run --name test-container-${{ github.run_id }}-${{ matrix.use_supervisor }} \
              -d -e ENABLE_SUPERVISOR=true  my-docker-image:${{ github.run_id }}-${{ matrix.use_supervisor }}
             
-           sleep 10 # container'ın ayağa kalkması için bekle
+           sleep 10 
            
            docker logs test-container-${{ github.run_id }}-${{ matrix.use_supervisor }}
            
