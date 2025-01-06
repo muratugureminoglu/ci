@@ -27,6 +27,7 @@ jobs:
         run: |
           docker build \
             --build-arg UseSupervisor=${{ matrix.use_supervisor }} \
+            --build-arg LicenseKey=${{ secrets.LICENSE_KEY }} \
             -t my-docker-image:${{ github.run_id }}-${{ matrix.use_supervisor }} .
 
       - name: Run Docker Container (No Supervisor)
