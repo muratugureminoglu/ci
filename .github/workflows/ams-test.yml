@@ -38,7 +38,7 @@ jobs:
     - name: Run uninstall script
       run: |
         wget https://raw.githubusercontent.com/ant-media/Ant-Media-Server/refs/heads/master/src/main/server/uninstall.sh
-        sudo ./uninstall.sh <<< "yes"
+        sudo bash ./uninstall.sh <<< "yes"
 
     - name: Verify uninstallation
       run: |
