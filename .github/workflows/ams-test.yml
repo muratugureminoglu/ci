@@ -30,6 +30,7 @@ jobs:
         systemctl is-active antmedia
         # Check if installation directory exists
         test -d /usr/local/antmedia
+        ps -aux |grep antmedia
 
     - name: Run uninstall script
       run: |
