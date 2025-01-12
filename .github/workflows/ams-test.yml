@@ -31,10 +31,6 @@ jobs:
         # Check if installation directory exists
         test -d /usr/local/antmedia
 
-    - name: Make uninstall script executable
-      run: |
-        chmod +x uninstall.sh
-
     - name: Run uninstall script
       run: |
         wget https://raw.githubusercontent.com/ant-media/Ant-Media-Server/refs/heads/master/src/main/server/uninstall.sh
