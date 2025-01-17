@@ -5,6 +5,8 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+env:
+  DEBUG: true
 
 jobs:
   test-docker-builds:
@@ -33,7 +35,7 @@ jobs:
       - name: Test Container (Supervisor=${{ matrix.supervisor }})
         run: |
           docker images
-          docker run -d -p 5080:5080 --name antmedia-true antmedia:${{ matrix.supervisor }}
+          docker run -d --name antmedia-true antmedia:${{ matrix.supervisor }}
           AMS_PID=$(docker exec antmedia-${{ matrix.supervisor }} pgrep -f "antmedia")
 
 
