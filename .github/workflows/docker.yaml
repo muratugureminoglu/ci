@@ -27,7 +27,7 @@ jobs:
           push: false
           build-args: |
             UseSupervisor=${{ matrix.supervisor }}
-            LicenseKey=${{ secrets.ANT_MEDIA_LICENSE }}
+            LicenseKey=${{ secrets.LICENSE_KEY }}
           tags: antmedia:${{ matrix.supervisor }}
 
       - name: Test Container (Supervisor=${{ matrix.supervisor }})
