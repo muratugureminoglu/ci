@@ -67,5 +67,3 @@ jobs:
 
 
           
-      - name: Stop and remove the container
-        run: docker stop antmediaserver && docker rm antmediaserver
