@@ -24,14 +24,11 @@ jobs:
         run: curl -L -o ant-media-server-community.zip $(curl -s https://api.github.com/repos/ant-media/Ant-Media-Server/releases/latest | grep "browser_download_url" | cut -d '"' -f 4)
 
       - name: Build with Supervisor=${{ matrix.supervisor }}
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-          build-args: |
-            UseSupervisor=${{ matrix.supervisor }}
-            AntMediaServer=ant-media-server-community.zip
-          tags: antmedia:${{ matrix.supervisor }}
+        run: |
+          docker build \
+            --build-arg UseSupervisor=${{ matrix.supervisor }} \
+            --build-arg AntMediaServer=ant-media-server-community.zip \
+            -t antmedia:${{ matrix.supervisor }} .
 
       - name: Test Container (Supervisor=${{ matrix.supervisor }})
         run: |
