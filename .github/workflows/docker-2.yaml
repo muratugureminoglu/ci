@@ -36,7 +36,14 @@ jobs:
         run: |
           docker images
           docker run -d -p 5080:5080 --name antmedia-${{ matrix.supervisor }} antmedia:${{ matrix.supervisor }}
-          AMS_PID=$(docker exec antmedia-${{ matrix.supervisor }} pgrep -f "antmedia")
+          docker ps -a
+          docker logs antmedia-${{ matrix.supervisor }}
+          sleep 30
+          docker ps
+
+#          docker images
+#          docker run -d -p 5080:5080 --name antmedia-${{ matrix.supervisor }} antmedia:${{ matrix.supervisor }}
+#          AMS_PID=$(docker exec antmedia-${{ matrix.supervisor }} pgrep -f "antmedia")
 
 
 
