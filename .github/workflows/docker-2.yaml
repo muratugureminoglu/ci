@@ -40,7 +40,7 @@ jobs:
           docker logs antmedia-${{ matrix.supervisor }}
           sleep 30
           docker ps
-
+          AMS_PID=$(docker exec antmedia-${{ matrix.supervisor }} pgrep -f "antmedia")
           if [ "${{ matrix.supervisor }}" = "true" ]; then
             # With supervisor: AMS should NOT run with PID 1
             if [ "$AMS_PID" = "1" ]; then
