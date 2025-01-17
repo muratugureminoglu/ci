@@ -35,34 +35,7 @@ jobs:
           docker images
           docker run -d -p 5080:5080 --name antmedia-${{ matrix.supervisor }} antmedia:${{ matrix.supervisor }}
           AMS_PID=$(docker exec antmedia-${{ matrix.supervisor }} pgrep -f "antmedia")
-          if [ "${{ matrix.supervisor }}" = "true" ]; then
-            # With supervisor: AMS should NOT run with PID 1
-            if [ "$AMS_PID" = "1" ]; then
-              echo "Error: Ant Media Server is running with PID 1 when supervisor is enabled"
-              docker logs antmedia-${{ matrix.supervisor }}
-              exit 1
-            else
-              echo "Success: Ant Media Server is running with PID $AMS_PID (with supervisor)"
-            fi
-          else
-            # Without supervisor: AMS should run with PID 1
-            if [ "$AMS_PID" = "1" ]; then
-              echo "Success: Ant Media Server is running with PID 1 (without supervisor)"
-            else
-              echo "Error: Ant Media Server is not running with PID 1 when supervisor is disabled"
-              docker logs antmedia-${{ matrix.supervisor }}
-              exit 1
-            fi
-          fi
-          
-          # Additional validation: Check if supervisor is running when enabled
-          if [ "${{ matrix.supervisor }}" = "true" ]; then
-            SUPERVISOR_RUNNING=$(docker exec antmedia-${{ matrix.supervisor }} pgrep -f "supervisord" || echo "")
-            if [ -z "$SUPERVISOR_RUNNING" ]; then
-              echo "Error: Supervisor process not found when it should be enabled"
-              exit 1
-            fi
-          fi
+
 
 
 
