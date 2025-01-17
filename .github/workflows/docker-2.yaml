@@ -33,7 +33,7 @@ jobs:
       - name: Test Container (Supervisor=${{ matrix.supervisor }})
         run: |
           docker images
-          docker run -d -p 5080:5080 --name antmedia-${{ matrix.supervisor }} antmedia:${{ matrix.supervisor }}
+          docker run -d -p 5080:5080 --name antmedia-true antmedia:${{ matrix.supervisor }}
           AMS_PID=$(docker exec antmedia-${{ matrix.supervisor }} pgrep -f "antmedia")
 
 
