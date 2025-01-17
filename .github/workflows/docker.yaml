@@ -20,6 +20,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Download the latest version of Ant Media Server
+        run: curl -L -o ant-media-server-community.zip $(curl -s https://api.github.com/repos/ant-media/Ant-Media-Server/releases/latest | grep "browser_download_url" | cut -d '"' -f 4)
+
       - name: Build with Supervisor=${{ matrix.supervisor }}
         uses: docker/build-push-action@v5
         with:
