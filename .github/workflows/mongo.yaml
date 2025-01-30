@@ -24,7 +24,7 @@ jobs:
         run: wget https://raw.githubusercontent.com/ant-media/Scripts/3a67539605f0b51042867581c0c81e3365b90a71/install_mongodb.sh && chmod +x install_mongodb.sh
 
       - name: Run MongoDB installation script
-        run: sudo ./mongodb-install.sh --auto-create
+        run: bash ./mongodb-install.sh --auto-create
 
       - name: Verify MongoDB service
         run: |
