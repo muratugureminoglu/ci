@@ -29,7 +29,11 @@ jobs:
         run: bash ./install_mongodb.sh --auto-create | tee /tmp/mongodb-install.log
 
       - name: Verify MongoDB service
-        run: systemctl is-active mongod || (echo "MongoDB failed to start" && exit 1)
+        run: |
+          sudo systemctl restart mongod
+          sudo systemctl enable mongod
+          sleep 5
+          systemctl is-active mongod || (echo "MongoDB failed to start" && exit 1)
 
       - name: Extract MongoDB Credentials and Save to File
         run: |
