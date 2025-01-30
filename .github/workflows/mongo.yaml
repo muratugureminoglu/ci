@@ -30,8 +30,8 @@ jobs:
 
       - name: Verify MongoDB service
         run: |
-          grep 'MongoDB username:' /tmp/mongodb-install.log | awk '{print $3}' > /tmp/mongodb-user.txt
-          grep 'MongoDB password:' /tmp/mongodb-install.log | awk '{print $3}' > /tmp/mongodb-pass.txt
+          #grep 'MongoDB username:' /tmp/mongodb-install.log | awk '{print $3}' > /tmp/mongodb-user.txt
+          #grep 'MongoDB password:' /tmp/mongodb-install.log | awk '{print $3}' > /tmp/mongodb-pass.txt
           systemctl is-active mongod || (echo "MongoDB failed to start" && exit 1)
 
       - name: Test MongoDB authentication
