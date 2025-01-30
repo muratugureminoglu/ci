@@ -26,7 +26,12 @@ jobs:
           ls -alh
 
       - name: Run MongoDB installation script
-        run: bash ./install_mongodb.sh --auto-create
+        id: install
+        run: |
+          output=$(sudo ./install_mongodb.sh --auto-create | tee /tmp/mongodb-output.log)
+          echo "$output"
+          echo "USERNAME=$(echo "$output" | grep 'MongoDB username:' | awk '{print $3}')" >> $GITHUB_ENV
+          echo "PASSWORD=$(echo "$output" | grep 'MongoDB password:' | awk '{print $3}')" >> $GITHUB_ENV
 
       - name: Verify MongoDB service
         run: |
@@ -34,4 +39,4 @@ jobs:
 
       - name: Test MongoDB authentication
         run: |
-          echo 'show dbs' | mongosh --username "$(grep 'MongoDB username:' install_mongodb.sh  | awk '{print $3}')" --password "$(grep 'MongoDB password:' install_mongodb.sh | awk '{print $3}')" --authenticationDatabase admin || (echo "Authentication failed" && exit 1)
+          echo 'show dbs' | mongosh --username "$USERNAME" --password "$PASSWORD" --authenticationDatabase admin || (echo "Authentication failed" && exit 1)
