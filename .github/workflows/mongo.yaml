@@ -44,6 +44,8 @@ jobs:
 
       - name: Test MongoDB authentication
         run: |
+          cat /tmp/mongodb-user.txt
+          cat /tmp/mongodb-pass.txt
           USERNAME=$(cat /tmp/mongodb-user.txt)
           PASSWORD=$(cat /tmp/mongodb-pass.txt)
           echo "Testing login with user: $USERNAME"
