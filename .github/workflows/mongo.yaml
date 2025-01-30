@@ -40,7 +40,8 @@ jobs:
           ps -aux |grep mongo
           grep 'MongoDB username:' /tmp/mongodb-install.log | awk '{print $3}' > /tmp/mongodb-user.txt
           grep 'MongoDB password:' /tmp/mongodb-install.log | awk '{print $3}' > /tmp/mongodb-pass.txt
-
+          cat /tmp/mongodb-install.log
+          grep 'MongoDB username:' /tmp/mongodb-install.log | awk '{print $3}'
 
       - name: Test MongoDB authentication
         run: |
