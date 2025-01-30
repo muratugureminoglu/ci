@@ -34,4 +34,4 @@ jobs:
 
       - name: Test MongoDB authentication
         run: |
-          echo 'show dbs' | mongosh --username "$(grep 'MongoDB username:' mongodb-install.sh | awk '{print $3}')" --password "$(grep 'MongoDB password:' mongodb-install.sh | awk '{print $3}')" --authenticationDatabase admin || (echo "Authentication failed" && exit 1)
+          echo 'show dbs' | mongosh --username "$(grep 'MongoDB username:' install_mongodb.sh  | awk '{print $3}')" --password "$(grep 'MongoDB password:' install_mongodb.sh | awk '{print $3}')" --authenticationDatabase admin || (echo "Authentication failed" && exit 1)
