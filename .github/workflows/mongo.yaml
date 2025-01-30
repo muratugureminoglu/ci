@@ -26,9 +26,10 @@ jobs:
           ls -alh
 
       - name: Run MongoDB installation script
-        run: bash ./install_mongodb.sh --auto-create
+        run: bash ./install_mongodb.sh --auto-create | tee /tmp/mongodb-install.log
 
       - name: Verify MongoDB service
         run: |
+          cat /tmp/mongodb-install.log
           systemctl is-active mongod || (echo "MongoDB failed to start" && exit 1)
 
