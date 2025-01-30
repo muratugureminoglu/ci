@@ -28,7 +28,7 @@ jobs:
       - name: Run MongoDB installation script
         id: install
         run: |
-          output=$(sudo ./install_mongodb.sh --auto-create | tee /tmp/mongodb-output.log)
+          output=$(bash ./install_mongodb.sh --auto-create | tee /tmp/mongodb-output.log)
           echo "$output"
           echo "USERNAME=$(echo "$output" | grep 'MongoDB username:' | awk '{print $3}')" >> $GITHUB_ENV
           echo "PASSWORD=$(echo "$output" | grep 'MongoDB password:' | awk '{print $3}')" >> $GITHUB_ENV
