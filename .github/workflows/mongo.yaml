@@ -28,10 +28,14 @@ jobs:
       - name: Run MongoDB installation script
         id: install
         run: |
-          output=$(bash ./install_mongodb.sh --auto-create | tee /tmp/mongodb-output.log)
-          echo "$output"
-          echo "USERNAME=$(echo "$output" | grep 'MongoDB username:' | awk '{print $3}')" >> $GITHUB_ENV
-          echo "PASSWORD=$(echo "$output" | grep 'MongoDB password:' | awk '{print $3}')" >> $GITHUB_ENV
+          ./install_mongodb.sh --auto-create | tee /tmp/mongodb-output.log
+
+      - name: Extract MongoDB credentials
+        run: |
+          USERNAME=$(grep "MongoDB username:" /tmp/mongodb-output.log | awk '{print $3}')
+          PASSWORD=$(grep "MongoDB password:" /tmp/mongodb-output.log | awk '{print $3}')
+          echo "USERNAME=$USERNAME" >> $GITHUB_ENV
+          echo "PASSWORD=$PASSWORD" >> $GITHUB_ENV
 
       - name: Verify MongoDB service
         run: |
