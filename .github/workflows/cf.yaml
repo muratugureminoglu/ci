@@ -12,6 +12,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: test
+        run: cloudformation 
+
       - name: Send Slack Notification on Failure
         if: failure()
         uses: slackapi/slack-github-action@v1.24.0
