@@ -32,4 +32,3 @@ jobs:
           slack-message: "CloudFormation deployment completed successfully! :white_check_mark:\nWorkflow: ${{ github.workflow }}\nJob: ${{ github.job }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
- 
