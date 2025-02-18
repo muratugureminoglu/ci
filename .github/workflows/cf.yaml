@@ -3,7 +3,7 @@ name: Ant Media Server Cloudformation Deployment
 on: [push]
 #  schedule:
 #    - cron: '0 0 * * 1'
-
+ 
 jobs:
   deploy_cf_template:
     runs-on: ubuntu-latest
