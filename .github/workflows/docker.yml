@@ -21,7 +21,7 @@ jobs:
 
       - name: Test MongoDB connection
         run: |
-          mongo --host localhost --port 27017 -u root -p root --authenticationDatabase admin --eval "db.runCommand({ ping: 1 })"
+          mongosh --host localhost --port 27017 -u root -p root --authenticationDatabase admin --eval "db.runCommand({ ping: 1 })"
 
       - uses: actions/checkout@v3
 
