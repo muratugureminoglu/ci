@@ -86,8 +86,8 @@ jobs:
         run: |
           docker ps
           docker run -d -p 5081:5080 --name antmedia-${{ matrix.supervisor }}-cluster antmedia:${{ matrix.supervisor }} -m cluster -h mongodb://localhost
-          docker ps -a | grep antmedia-${{ matrix.supervisor }}
-          docker logs antmedia-${{ matrix.supervisor }}
+          docker ps -a | grep antmedia-${{ matrix.supervisor }}-cluster
+          docker logs antmedia-${{ matrix.supervisor }}-cluster
           sleep 30    
 
       - name: Check Ant Media Server health with a timeout
