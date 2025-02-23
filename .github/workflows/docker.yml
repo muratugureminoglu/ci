@@ -30,7 +30,7 @@ jobs:
 
       - name: Build with Supervisor=${{ matrix.supervisor }}
         run: |
-          docker build -f docker/Dockerfile_Process \
+          docker build -f Dockerfile \
             --build-arg UseSupervisor=${{ matrix.supervisor }} \
             --build-arg LicenseKey=${{ secrets.ENTERPRISE_LICENSE }} \
             -t antmedia:${{ matrix.supervisor }} .
