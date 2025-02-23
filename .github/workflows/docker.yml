@@ -19,7 +19,8 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        supervisor: [ true, false] 
+        supervisor: [ true, false]
+        cluster: [true]
         
     steps:
       - name: Checkout code
@@ -82,6 +83,13 @@ jobs:
               exit 1
             fi
           fi
+
+      - name: Test Container (Cluster=${{ matrix.supervisor }})
+        run: |
+          docker run -d -p 5080:5080 --name antmedia-${{ matrix.cluster }} antmedia:${{ matrix.cluster }} -m cluster -h mongodb://localhost
+          docker ps -a | grep antmedia-${{ matrix.cluster }}
+          docker logs antmedia-${{ matrix.cluster }}
+          sleep 30    
 
       - name: Check Ant Media Server health with a timeout
         run: |
