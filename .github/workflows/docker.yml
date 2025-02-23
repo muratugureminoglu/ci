@@ -39,7 +39,7 @@ jobs:
         run: |
           docker images
           export LICENSE_KEY="test-test"
-          docker run -d -p 5080:5080 --name antmedia-${{ matrix.supervisor }} antmedia:${{ matrix.supervisor }} 
+          docker run -d -p 5080:5080 --name antmedia-${{ matrix.supervisor }} antmedia:${{ matrix.supervisor }} -l $LICENSE_KEY
           docker ps -a
           docker logs antmedia-${{ matrix.supervisor }}
           sleep 30
