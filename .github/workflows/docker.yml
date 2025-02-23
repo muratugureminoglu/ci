@@ -1,57 +1,59 @@
-name: Ant Media Server Options and MongoDB Test
+name: Dockerfile MongoDB Parametre Testi
 
-on: [push]
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-  build:
+  test-dockerfile-mongodb:
     runs-on: ubuntu-latest
-
     services:
       mongodb:
-        image: mongo:6
+        image: mongo:8
         ports:
           - 27017:27017
-        env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: root
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ping: 1})'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - uses: actions/checkout@v3
-
-      - name: Build the Docker image
-        run: docker build --network=host -t ams-test --build-arg LicenseKey="${{ secrets.ENTERPRISE_LICENSE }}" .
-
-      - name: Run the Docker container with options
+      - name: Build Docker Image
         run: |
-          docker run -d --name ams-container -p 5080:5080 ams-test -g true -m cluster -h mongodb://root:root@localhost:27017
+          docker build \
+            --build-arg LicenseKey="${{ secrets.ENTERPRISE_LICENSE }}" \
+            --build-arg InstallMediaPush='true' \
+            --build-arg UseSupervisor='false' \
+            -t antmedia-test .
 
-      - name: Wait for the container to start
-        run: sleep 60  # AMS ve MongoDB'nin başlaması için yeterli süre verin
-
-      - name: Check if options are passed correctly
+      - name: Run Docker Container with MongoDB
         run: |
-          OPTIONS=$(docker exec ams-container printenv AMS_OPTIONS)
-          echo "AMS_OPTIONS: $OPTIONS"
-          if [[ "$OPTIONS" == "-g true -m cluster -h mongodb://root:root@localhost:27017" ]]; then
-            echo "Options test passed!"
+          docker run --rm \
+            --network=host \
+            -e "MONGO_URI=mongodb://localhost:27017/testdb" \
+            --name antmedia-container antmedia-test /bin/sh -c " \
+              echo 'Script Args: $@' > /home/param_log.txt && \
+              /usr/local/antmedia/start.sh -m cluster -h \$MONGO_URI && \
+              echo 'MongoDB Connected: \$MONGO_URI' > /home/test.txt"
+
+      - name: Verify Start Script Arguments
+        run: |
+          docker cp antmedia-container:/home/param_log.txt param_log.txt
+          cat param_log.txt
+
+          if grep -q '-m cluster' param_log.txt && grep -q "-h mongodb://localhost:27017/testdb" param_log.txt; then
+            echo "✅ start.sh doğru parametreleri aldı."
           else
-            echo "Options test failed. Expected '-g true -m cluster -h mongodb://root:example@localhost:27017', but got '$OPTIONS'"
-            exit 1
+            echo "❌ start.sh parametreleri almadı!" && exit 1
           fi
 
-      - name: Check MongoDB Connection 
+      - name: Verify MongoDB Test Output
         run: |
-          docker exec ams-container mongo --host localhost --port 27017 -u root -p example --eval "db.adminCommand('ping')"
-          if [[ $? -eq 0 ]]; then
-            echo "MongoDB connection test passed!"
-          else
-            echo "MongoDB connection test failed!"
-            exit 1
-          fi
-
-      - name: Stop and remove the container
-        if: always()
-        run: docker stop ams-container && docker rm ams-container
+          docker cp antmedia-container:/home/test.txt test.txt
+          cat test.txt
