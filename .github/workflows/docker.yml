@@ -19,10 +19,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Test MongoDB connection
-        run: |
-          mongosh --host localhost --port 27017 -u root -p root --authenticationDatabase admin --eval "db.runCommand({ ping: 1 })"
-
       - uses: actions/checkout@v3
 
       - name: Build the Docker image
