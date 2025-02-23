@@ -87,9 +87,9 @@ jobs:
       - name: Test Container (Cluster=${{ matrix.cluster }})
         run: |
           docker ps
-          docker stop antmedia-true 
-          docker container rm antmedia-true
-          docker run -d -p 5080:5080 --name antmedia-${{ matrix.cluster }} antmedia:${{ matrix.cluster }} -m cluster -h mongodb://localhost
+          #docker stop antmedia-true 
+          #docker container rm antmedia-true
+          docker run -d -p 5081:5080 --name antmedia-${{ matrix.cluster }} antmedia:${{ matrix.cluster }} -m cluster -h mongodb://localhost
           docker ps -a | grep antmedia-${{ matrix.cluster }}
           docker logs antmedia-${{ matrix.cluster }}
           sleep 30    
