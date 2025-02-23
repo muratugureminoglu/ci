@@ -1,0 +1,112 @@
+name: AMS Container Parameter Testing
+
+on:
+  pull_request:
+    branches: [ main, master, develop ]
+  push:
+    branches: [ main, master, develop ]
+
+jobs:
+  test-container-parameters:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        scenario: [standalone, cluster, turn]
+        include:
+          - scenario: standalone
+            server_mode: 'standalone'
+            global_ip: 'false'
+            public_ip: 'false'
+          - scenario: cluster
+            server_mode: 'cluster'
+            db_host: 'mongodb://localhost:27017'
+            global_ip: 'true'
+            public_ip: 'true'
+          - scenario: turn
+            server_mode: 'standalone'
+            turn_url: 'turn:test.example.com:3478'
+            turn_username: 'testuser'
+            turn_password: 'testpass'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: ams-test:${{ matrix.scenario }}
+          build-args: |
+            UseSupervisor=true
+
+      - name: Run Container Tests
+        run: |
+          # Create container with parameters based on scenario
+          case "${{ matrix.scenario }}" in
+            standalone)
+              docker run --name ams-test -d \
+                -e SERVER_MODE=${{ matrix.server_mode }} \
+                -e GLOBAL_IP=${{ matrix.global_ip }} \
+                -e PUBLIC_IP_AS_SERVER=${{ matrix.public_ip }} \
+                ams-test:${{ matrix.scenario }}
+              ;;
+            
+            cluster)
+              docker run --name ams-test -d \
+                -e SERVER_MODE=${{ matrix.server_mode }} \
+                -e DB_HOST=${{ matrix.db_host }} \
+                -e GLOBAL_IP=${{ matrix.global_ip }} \
+                -e PUBLIC_IP_AS_SERVER=${{ matrix.public_ip }} \
+                ams-test:${{ matrix.scenario }}
+              ;;
+            
+            turn)
+              docker run --name ams-test -d \
+                -e SERVER_MODE=${{ matrix.server_mode }} \
+                -e TURN_SERVER_URL=${{ matrix.turn_url }} \
+                -e TURN_USERNAME=${{ matrix.turn_username }} \
+                -e TURN_PASSWORD=${{ matrix.turn_password }} \
+                ams-test:${{ matrix.scenario }}
+              ;;
+          esac
+          
+          # Wait for container to start
+          sleep 10
+          
+          # Check logs for parameter validation
+          docker logs ams-test | grep "\[Parameter Check\]"
+          
+          # Verify specific parameters based on scenario
+          case "${{ matrix.scenario }}" in
+            standalone)
+              docker logs ams-test | grep "Server Mode.*standalone"
+              ;;
+            
+            cluster)
+              docker logs ams-test | grep "Server Mode.*cluster"
+              docker logs ams-test | grep "Database Host"
+              ;;
+            
+            turn)
+              docker logs ams-test | grep "TURN/STUN Server URL"
+              docker logs ams-test | grep "TURN Server Username"
+              ;;
+          esac
+
+      - name: Cleanup
+        if: always()
+        run: docker rm -f ams-test || true
+
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs-${{ matrix.scenario }}
+          path: |
+            /usr/local/antmedia/parameter_validation.log
+            /usr/local/antmedia/ant-media-server.log
