@@ -55,7 +55,7 @@ jobs:
           tags: ams-test:${{ matrix.scenario }}
           build-args: |
             UseSupervisor=true
-            LicenseKey="${{ secrets.ENTERPRISE_LICENSE }}"
+            LicenseKey=${{ secrets.ENTERPRISE_LICENSE }}
 
       - name: Run Container Tests
         run: |
