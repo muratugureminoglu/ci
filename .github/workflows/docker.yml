@@ -24,7 +24,7 @@ jobs:
 
       - name: Run the Docker container with options
         run: |
-          docker run -d --name ams-container -p 5080:5080 ams-test -g true -m cluster -h mongodb://root:example@localhost:27017
+          docker run -d --name ams-container -p 5080:5080 ams-test -g true -m cluster -h mongodb://root:root@localhost:27017
 
       - name: Wait for the container to start
         run: sleep 60  # AMS ve MongoDB'nin başlaması için yeterli süre verin
@@ -33,7 +33,7 @@ jobs:
         run: |
           OPTIONS=$(docker exec ams-container printenv AMS_OPTIONS)
           echo "AMS_OPTIONS: $OPTIONS"
-          if [[ "$OPTIONS" == "-g true -m cluster -h mongodb://root:example@localhost:27017" ]]; then
+          if [[ "$OPTIONS" == "-g true -m cluster -h mongodb://root:root@localhost:27017" ]]; then
             echo "Options test passed!"
           else
             echo "Options test failed. Expected '-g true -m cluster -h mongodb://root:example@localhost:27017', but got '$OPTIONS'"
