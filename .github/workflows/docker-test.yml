@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  test-dockerfile-mongodb:
+  test-container-parameters:
     runs-on: ubuntu-latest
     services:
       mongodb:
@@ -21,8 +21,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-  test-container-parameters:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         scenario: [standalone, cluster, turn]
