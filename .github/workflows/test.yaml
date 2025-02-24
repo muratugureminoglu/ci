@@ -15,20 +15,16 @@ jobs:
       
     - name: Test parameter values
       run: |
-        # Give execute permission to script
         chmod +x ./start.sh
         
-        # Run the script with test parameters
         echo "Running test with parameters..."
-        OUTPUT=$(./start.sh -g true -s false -m standalone -h "mongodb://user:pass@host" -l "my-license" -j "-Xms512m -Xmx2g" -c 60 -e 70 -t true)
+        OUTPUT=$(./start.sh -g true -s false -m standalone -h "mongodb://user:pass@host" -l "my-license" -j "-Xms512m -Xmx2g" -c 60 -e 70 -a turn.example -n turn -w turn_password -t true)
         
-        # Check if test mode header exists
         if ! echo "$OUTPUT" | grep -q "=== TEST MODE: Parameters successfully parsed ==="; then
           echo "Error: Test mode output not found"
           exit 1
         fi
         
-        # Define expected parameter values
         declare -A EXPECTED_VALUES=(
           ["USE_GLOBAL_IP"]="true"
           ["USE_PUBLIC_IP_AS_SERVER_NAME"]="false"
@@ -36,16 +32,15 @@ jobs:
           ["SERVER_MODE"]="standalone"
           ["DB_URL"]="mongodb://user:pass@host"
           ["LICENSE_KEY"]="my-license"
-          ["TURN_URL"]=""
-          ["TURN_USERNAME"]=""
-          ["TURN_PASSWORD"]=""
+          ["TURN_URL"]="turn.example"
+          ["TURN_USERNAME"]="turn"
+          ["TURN_PASSWORD"]="turn_password"
           ["KAFKA_URL"]=""
           ["JVM_MEMORY_OPTIONS"]="-Xms512m -Xmx2g"
           ["CPU_LIMIT"]="60"
           ["MEMORY_LIMIT"]="70"
         )
         
-        # Check each parameter value
         FAILED=0
         for param in "${!EXPECTED_VALUES[@]}"; do
           EXPECTED="${EXPECTED_VALUES[$param]}"
@@ -56,17 +51,16 @@ jobs:
           echo "  Actual:   '$ACTUAL'"
           
           if [ "$ACTUAL" != "$EXPECTED" ]; then
-            echo "❌ Parameter $param has incorrect value"
+            echo " Parameter $param has incorrect value"
             echo "   Expected: '$EXPECTED'"
             echo "   Actual:   '$ACTUAL'"
             FAILED=1
           else
-            echo "✅ Parameter $param has correct value"
+            echo " Parameter $param has correct value"
           fi
           echo "---"
         done
         
-        # Exit with failure if any parameter was incorrect
         if [ $FAILED -eq 1 ]; then
           echo "Some parameters had incorrect values"
           echo "Full output:"
@@ -74,4 +68,4 @@ jobs:
           exit 1
         fi
         
-        echo "✅ All parameters have correct values!"
+        echo " All parameters have correct values!"
